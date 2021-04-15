@@ -30,7 +30,6 @@
             <h2>Contact us</h2>
             <div class="content">
                 <% @contact = Contact.new %>
-                <%= form_for @contact do |f| %>
                 <div class="form-group">
                     <%= f.label :email, '返信先メールアドレス' %>
                     <%= f.text_field :email, class: 'form-control' %>

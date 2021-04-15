@@ -4,7 +4,6 @@
     <!– <title>fujitore</title> –>
     <title>FujiTomo</title>
     <%= favicon_link_tag 'favicon.png' %>
-    <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -25,7 +24,6 @@
       <%= render 'layouts/header' %>
       <%= render 'layouts/flash' %>
       <%= yield %>
-      <%= render 'layouts/footer' %>
     </div>
   </body>
 </html>
