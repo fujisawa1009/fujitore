@@ -1,0 +1,67 @@
+<div class="container">
+    <aside class="tras-side">
+    <button type="button" class="btn btn-primary tras-ran" style="text-align:center; ">詳細検索</button>
+        <div class="tras-ransack">
+            <%= search_form_for @q do |f| %>
+                <div class="form-group">
+                    <i class="fas fa-sort"></i>
+                    <%= f.label "並び替え" %></br>
+                    <%= f.select( :sorts, { '': 'id desc', '料金の安い順': 'price asc', '料金の高い順': 'price desc', '古い順': 'updated_at asc', '新しい順': 'updated_at desc', '口コミの多い順': 'comment_count desc', 'いいね の多い順': 'likes_count desc'}) %>
+                </div>
+                <div class="form-group">
+                    <i class="fas fa-search-minus"></i>
+                    <%= f.label :name, "キーワード" %></br>
+                    <%= f.search_field :name_or_title_or_content_or_categories_name_cont %>
+                </div>
+                <div class="form-group">
+                    <i class="fas fa-venus-mars"></i>
+                    <%= f.label :sex, "性別" %></br>
+                    <%= f.radio_button :sex_eq, '', {:checked => true} %>指定なし
+                    <%= f.radio_button :sex_eq, 0 %>男性
+                    <%= f.radio_button :sex_eq, 1 %>女性
+                </div>
+                <div class="form-group">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <%= f.label :districts_id_eq, "エリア" %></br>
+                    <%= f.collection_select :districts_id_eq, @districts, :id, :name, include_blank: true %></br>
+                </div>
+                <div class="form-group">
+                    <i class="fas fa-align-left"></i>
+                    <%= f.label :categories_id_in, "カテゴリー" %></br>
+                    <%= f.collection_check_boxes :categories_id_in, @categories, :id, :name do |b| %>
+                        <%= b.label {b.check_box + b.text} %>
+                    <% end %>
+                </div>
+                <div class="form-group">
+                    <i class="fas fa-yen-sign"></i>
+                    <%= f.label :price, '料金' %></br>
+                    <%= f.number_field :price_gteq %>円以上
+                    <%= f.number_field :price_lt %>円未満
+                </div>
+                    <%= f.submit "検索", class: 'btn btn-success btn-sub'%>
+            <% end %>
+        </div>
+<script>
+$(function(){
+$(".tras-ransack").hide();
+});
+$(function(){
+$(".tras-ran").on("click", function() {
+$(this).next().slideToggle();
+});
+});
+</script>
+    </aside>
+
+        <div class="row justify-content-center">
+        <% if @trainers.empty? %>
+            <p>検索結果 0件： 他のキーワードで検索してみよう！</p>
+        <% elsif params[:q] %>
+            <div style="text-align:center; width:1000px;"><p>検索結果 <%= @trainers.total_count %>件</p></div></br>
+            <%= render 'trainers/trainers-index' %>
+        <% else %>
+            <%= render 'trainers/trainers-index' %>
+        <% end %>
+        </div><!--row-->
+    <%= paginate @trainers %>
+</div><!--container-->

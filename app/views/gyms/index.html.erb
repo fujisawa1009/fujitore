@@ -1,0 +1,60 @@
+<div class="container">
+    <button type="button" class="btn btn-primary gyms-ran" style="text-align:center; ">詳細検索</button>
+    <div class="gyms-contents">
+        <aside class="gyms-side">
+            <div class="gyms-ransack">
+                <%= search_form_for @q do |f| %>
+                    <div class="form-group">
+                        <i class="fas fa-sort"></i>
+                        <%= f.label "並び替え" %></br>
+                        <%= f.select( :sorts, { '': 'id desc', '料金の安い順': 'price asc', '料金の高い順': 'price desc', '古い順': 'updated_at asc', '新しい順': 'updated_at desc', '口コミの多い順': 'comments_count desc'}) %>
+                    </div>
+                    <div class="form-group">
+                        <i class="fas fa-search-minus"></i>
+                        <%= f.label :name, "キーワード" %>
+                        <%= f.search_field :name_or_title_or_content_or_address_or_categories_name_cont %>
+                    </div>
+                    <div class="form-group">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <%= f.label :district_id_eq, "エリア" %></br>
+                        <%= f.collection_select :district_id_eq, @districts, :id, :name, include_blank: true %>
+                    </div>
+                    <div class="form-group">
+                        <i class="fas fa-align-left"></i>
+                        <%= f.label :categories_id_in, "カテゴリー" %></br>
+                        <%= f.collection_check_boxes :categories_id_in, @categories, :id, :name do |b|%>
+                            <%= b.label {b.check_box + b.text} %>
+                        <% end %>
+                    </div>
+                    <div class="form-group">
+                        <i class="fas fa-yen-sign"></i>
+                        <%= f.label :price, '月会費' %></br>
+                        <%= f.number_field :price_gteq %>〜
+                        <%= f.number_field :price_lt %>未満
+                    </div>
+                        <%= f.submit "検索", class: 'btn btn-success btn-sub'%>
+                <% end %>
+            </div>
+        </aside>
+
+        <div class="gyms-items">
+            <% if @gyms.empty? %>
+                <p>検索結果 0件： 他のキーワードで検索してみよう！</p>
+            <% elsif params[:q] %>
+                <div style="text-align:center; width:650px;"><p>検索結果 <%= @gyms.total_count %>件</p></div>
+                <%= render 'gyms/gyms-index' %>
+            <%else%>
+                <%= render 'gyms/gyms-index' %>
+            <% end %>
+            <%= paginate @gyms %>
+        </div>
+    </div>
+</div>
+
+<script>
+$(function(){
+$(".gyms-ran").on("click", function() {
+$('.gyms-side').slideToggle();
+});
+});
+</script>

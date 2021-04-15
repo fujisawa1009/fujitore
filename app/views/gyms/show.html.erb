@@ -1,0 +1,318 @@
+<div class="container">
+
+  <div class="gym-wrapper">
+    <div class="row">
+      <div class="col-md-6 col-xs-12 gym-right">
+        <h3><%= @gym.name %></h3>
+        <div class="gym-rate">
+          <p id="star-ave">評価　</p>
+          <p>(口コミ数<%= @gym.comments.count %>)</p>
+        </div>
+        <script>
+        $('#star-ave').raty({
+        size: 36,
+        starOff:  '<%= asset_path('star-off.png') %>',
+        starOn : '<%= asset_path('star-on.png') %>',
+        starHalf: '<%= asset_path('star-half.png') %>',
+        half: true,
+        readOnly: true,
+        score: <%= @gym.comments.average(:rate).to_f.round(1) %>,
+          });
+        </script>
+        <p><%= @gym.title %></p>
+        <p class="district-name"><%= @gym.district.name unless @gym.district.nil?%></p>
+        <p><%= @gym.address %></p>
+        <% if @gym.number? %>
+          <i class="fa fa-phone" aria-hidden="true" style="color: #0080ff;" ></i>
+          <%= @gym.number %></br>
+        <%end%>
+        <% @gym.gym_categories.each do |g|%>
+          <%= link_to g.category.name, gyms_path(q: {categories_id_in: g.category_id }), {class: "gyms-content"} %>
+        <% end %>
+      </div>
+      <div class="col-md-6 col-xs-12 gym-left">
+        <%= image_tag(@gym.image.url, class: "img-fluid img-thumbnail") %>
+      </div>
+    </div>
+  </div>
+
+
+  <div class='tabs'>
+    <div class='tab-buttons'>
+      <span class='content1'>ホーム</span>
+      <span class='content2'>写真</span>
+      <span class='content3'>口コミ</span>
+      <span class='content4'>地図</span>
+      <div id='lamp' class='content1'></div>
+    </div>
+    <div class='tab-content'>
+      
+      <div class='content1'>
+        <div class="gym-content">
+          <% text = @gym.content %>
+          <%= markdown(text).html_safe %>
+        </div>
+      </div>
+      
+      <div class='content2'>
+        <div class="contain">
+          <% @gym.item_images.each do |item_image| %>
+              <div class="items-item">
+                <div class="real">
+                  <%= link_to item_image.image.url, 'data-lightbox': item_image.image do %>
+                    <%= image_tag item_image.image.url  if item_image.image? %>
+                  <%end%>
+                </div>
+              </div>
+          <%end%>
+        </div>
+      </div>
+      
+      <div class='content3'>
+        <%= render 'shared/comment-form', gt: @gym %>
+        <%= paginate @comments %>
+                <%= form_with(model: [@gym, @comment], local: true, remote: true) do |f| %>
+                <div class="form-group">
+                  <%= f.label :title, "タイトル" %>
+                  <%= f.text_area :title, class: "form-control", rows: 1 %>
+                </div>
+
+                <div class="form-group">
+                  <%= f.label :content, "内容" %>
+                  <%= f.text_area :content, class: "form-control", rows: 5 %>
+                </div>
+
+                <div class="form-group" id="star">
+                  <%= f.label :rate,'評価' %>
+                  <%= f.hidden_field :rate, id: :comment_star %>
+                </div>
+
+                <script>
+                  $('#star').raty({
+                    size     : 36,
+                    starOff:  '<%= asset_path('star-off.png') %>',
+                    starOn : '<%= asset_path('star-on.png') %>',
+                    starHalf: '<%= asset_path('star-half.png') %>',
+                    scoreName: 'comment[rate]',
+                    half: true,
+                    });
+                </script>
+
+                <%= button_tag type: "submit", class: "btn btn-success float-right mt-1" do %>
+                  <i class="far fa-comments"></i> コメントする
+                <% end %>
+              <% end %>
+      </div><!--content3-->
+
+      <div class='content4'>
+        <% if @gym.address.empty? %>
+          <h4>位置情報はまだ登録されていません。</h4>
+        <% else %>
+          <h4>位置情報</h4>
+          <div id='map'></div>
+        <% end %>
+        <script src="https://maps.googleapis.com/maps/api/js?key=<%= Rails.application.credentials.google_map_api %>&callback=initMap" async defer></script>
+        <script>
+        function initMap(){
+          let m = {lat: <%= @gym.latitude %>, lng: <%= @gym.longitude %>};
+          let map = new google.maps.Map(document.getElementById('map'), {
+            center: m,
+          zoom: 16
+          });
+              var transitLayer = new google.maps.TransitLayer();
+            transitLayer.setMap(map);
+
+            var contentString = '住所：<%= @gym.address %>';
+            var infowindow = new google.maps.InfoWindow({
+              content: contentString
+            });
+
+            var marker = new google.maps.Marker({
+              position: m,
+              map: map,
+              title: contentString
+            });
+        }
+        window.onload = function () {
+    initMap();
+}
+        </script>
+      </div>
+        
+    </div><!--tab-content-->
+  </div><!--tabs-->
+  <% if @gym.gym_trainers.empty? %>
+    <h5>トレーナーの登録がありません</h5>
+  <% else %>
+    <div class="swiper-">
+      <div class="swiper-container">
+        <h2 class="heading">施設利用可能なトレーナー</h2>
+        <div class="swiper-wrapper">
+          <% @gym.gym_trainers.each do |gym| %>
+            <div class="swiper-slide">
+              <div class="slide-item">
+              <a class="link" href="/trainers/<%= gym.trainer.id %>"></a>
+                <div class="slide-top">
+                  <div class="slide-left">
+                    <a href="/trainers/<%= gym.trainer.id %>"><%= image_tag (gym.trainer.image.url) %></a>
+                  </div>
+                  <div class="slide-right">
+                    <h6><%= gym.trainer.name %></h6>
+                      <p id="star-ave<%= gym.trainer.id %>"></p>
+                          <script>
+                          $('#star-ave<%= gym.trainer.id %>').raty({
+                          size: 36,
+                          starOff:  '<%= asset_path('star-off.png') %>',
+                          starOn : '<%= asset_path('star-on.png') %>',
+                          starHalf: '<%= asset_path('star-half.png') %>',
+                          half: true,
+                          readOnly: true,
+                          score: <%= gym.trainer.comments.average(:rate).to_f.round(1) %>,
+                            });
+                          </script>
+                      <p>(<%= gym.trainer.comments.count %>)</p></br>
+                      <% gym.trainer.trainer_categories.each do |tra| %>
+                        <li class="tras-cate"><%= link_to tra.category.name, trainers_path(q: {categories_id_in: tra.category_id }) unless tra.category.nil? %></li>
+                      <% end %>
+                  </div>
+                </div><!--slide-top-->
+                <div class="slide-middle">
+                  <% if gym.trainer.title.length > 40 %>
+                    <p class="read"><%= gym.trainer.title %></p>
+                  <% else %>
+                    <p><%= gym.trainer.title %></p>
+                  <% end %>
+                  <script>
+                    $(function () {
+                      $('.read').readmore({
+                      speed: 100,
+                      collapsedHeight: 45,
+                      moreLink: '<a href="#">続きを読む</a>',
+                      lessLink: '<a href="#">閉じる</a>'
+                      });
+                    });
+                  </script>
+                </div>
+                <div class="slide-bottom">
+                  <% gym.trainer.comments.reverse.first(1).each do |comment| %>
+                    <div id="star-rate-<%= comment.id %>"></div>
+                      <% if comment.content.length > 40 %>
+                        <p class="read"><%= comment.content %></p>
+                      <% else %>
+                        <p><%= comment.content %></p>
+                      <% end %>
+                      <script>
+                        $('#star-rate-<%= comment.id %>').raty({
+                        size: 30,
+                        starOff:  '<%= asset_path('star-off.png') %>',
+                        starOn : '<%= asset_path('star-on.png') %>',
+                        starHalf: '<%= asset_path('star-half.png') %>',
+                        half: true,
+                        readOnly: true,
+                        score: <%= comment.rate %>,
+                        });
+                      </script>
+                    <div class="profile">
+                      <p> (<%= sex(comment.user.sex) %></p>
+                      <p><%= age(comment.user.age) %>)</p>
+                      <p><%= comment.created_at.strftime("%Y-%m-%d") %></p>
+                    </div>
+                  <% end %>
+                  <div class="tras-like">
+                    <% if user_signed_in? %>
+                      <% if current_user.already_liked?(gym.trainer) %>
+                        <%= link_to trainer_like_path(gym.trainer, gym.trainer), method: :delete, remote: :true do %>
+                          <i class="fa fa-heart" aria-hidden="true" style="color: red;">
+                            <%= gym.trainer.likes.count %> 
+                          </i>
+                        <% end %>
+                      <% else %>
+                        <%= link_to trainer_likes_path(gym.trainer, gym.trainer), method: :post, remote: :true do %>
+                          <i class="fa fa-heart" aria-hidden="true" style="color: #C0C0C0;">
+                            <%= gym.trainer.likes.count %> 
+                          </i>
+                        <% end %>
+                      <% end %>
+                    <% else %>
+                      <i class="fa fa-heart" aria-hidden="true" style="color: red;">
+                        <%= gym.trainer.likes.count %>
+                      </i>
+                    <% end %>
+                  </div>
+                </div><!--slide-bottom-->
+              </div><!--slide-item-->
+            </div><!--swiper-slide-->
+          <% end %>
+        </div><!--swiper-wrapper-->
+        <div class="swiper-pagination"></div>
+      </div><!--swiper-container-->
+      <div class="swiper-button-prev"></div>
+      <div class="swiper-button-next"></div>
+    </div><!--swiper-->
+  <% end %>
+</div><!--container-->
+
+
+<script>
+$('.tab-content>div').hide();
+$('.tab-content>div').first().slideDown();
+  $('.tab-buttons span').click(function(){
+    var thisclass=$(this).attr('class');
+    $('#lamp').removeClass().addClass('#lamp').addClass(thisclass);
+    $('.tab-content>div').each(function(){
+      if($(this).hasClass(thisclass)){
+        $(this).fadeIn(800);
+      }
+      else{
+        $(this).hide();
+      }
+    });
+  });
+</script>
+<script>
+var mySwiper = new Swiper('.swiper-container', {
+  slidesPerView: 1,
+    breakpoints: {
+    375: {
+      slidesPerView: 1.1,
+    },
+    405: {
+      slidesPerView: 1.2,
+    },
+    433: {
+      slidesPerView: 1.3,
+    },
+    495: {
+      slidesPerView: 1.5,
+    },
+    530: {
+      slidesPerView: 1.6,
+    },
+    768: {
+      slidesPerView: 2.2,
+    },
+    992: {
+      slidesPerView: 3,
+    },
+    1200: {
+      slidesPerView: 3.1,
+    }
+  },
+    navigation: {
+    nextEl: '.swiper-button-next',
+    prevEl: '.swiper-button-prev',
+  },
+	autoplay: {
+		delay: 10000,
+		stopOnLastSlide: false,
+		disableOnInteraction: false,
+    reverseDirection: false,
+    centeredSlides : true
+  },	
+  pagination: {
+		el: '.swiper-pagination',
+		type: 'fraction',
+	}
+  
+});
+</script>

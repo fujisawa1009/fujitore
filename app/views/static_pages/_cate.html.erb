@@ -1,0 +1,46 @@
+<div class="categories">
+  <div class="flex">
+    <div class="category text-center">
+      <%= link_to gyms_path(q: {categories_id_in: "1" }) do %>
+          <%= image_tag("spots_gym.jpeg") %>
+          <p class="cate-p">スポーツジム</p>
+          <div class="cate-gra"></div>
+      <% end %>
+    </div>
+    <div class="category text-center">
+      <%= link_to gyms_path(q: {categories_id_in: "2" }) do %>
+          <%= image_tag("yoga.jpg") %>
+          <p class="cate-p">ヨガ</p>
+          <div class="cate-gra"></div>
+      <% end %>
+    </div>
+    <div class="category text-center">
+      <%= link_to gyms_path(q: {categories_id_in: "3" }) do %>
+          <%= image_tag("swimming.jpg") %>
+          <p class="cate-p">スイミング</p>
+          <div class="cate-gra"></div>
+      <% end %>
+    </div>
+    <div class="category text-center">
+      <%= link_to gyms_path(q: {categories_id_in: "4" }) do %>
+          <%= image_tag("golf.jpeg") %>
+          <p class="cate-p">ゴルフ</p>
+          <div class="cate-gra"></div>
+      <% end %>
+    </div>
+    <div class="category text-center">
+      <%= link_to gyms_path(q: {categories_id_in: "5" }) do %>
+          <%= image_tag("kakutougi.jpg") %>
+          <p class="cate-p">格闘技</p>
+          <div class="cate-gra"></div>
+      <% end %>
+    </div>
+    <div class="category text-center">
+      <%= link_to gyms_path(q: {categories_id_in: "6" }) do %>
+          <%= image_tag("tennis.jpg") %>
+          <p class="cate-p">テニス</p>
+          <div class="cate-gra"></div>
+      <% end %>
+    </div>
+  </div>
+</div>

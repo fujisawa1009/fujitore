@@ -1,0 +1,31 @@
+<div class="back"></div>
+<header>
+  <!– 2021/04/14　コメントアウト下記変更　　Home左上ロゴ
+  <label><a class="log" href="/">Fujitore</a></label>
+  –>
+  <label><a class="log" href="/">FujiTomo</a></label>
+  <ul>
+    <li><a class="list" href="/">home</a></li>
+    <li><a class="list" href="/gyms">ジム一覧</a></li>
+    <li><a class="list" href="/trainers">トレーナー一覧</a></li>
+    <li><a class="list" href="/admin/login">管理者</a></li>
+    <% if user_signed_in? %>
+      <li><a class="list" href="/users/sign_out">ログアウト</a></li>
+      <li><a class="active list" href="/users/<%= current_user.id %>">アカウント</a></li>
+    <% else %>
+      <li><a class="list" href="/users/sign_in">ログイン</a></li>
+      <li><a class="active list" href="/users/sign_up">新規登録</a></li>
+    <% end %>
+  </ul>
+  <label id ="ico">
+    <i class="fas fa-bars"></i>
+  </label>
+</header>
+
+<script>
+  $(document).ready(function(){
+    $('#ico').click(function(){
+      $('ul').toggleClass('show');
+    });
+  });
+</script>

@@ -1,0 +1,26 @@
+<% @gyms.each do |gym| %>
+    <div class="new-gym">
+        <a class="link" href="/gyms/<%= gym.id %>"></a>
+        <div class="new-gym-left">
+            <%= image_tag(gym.image.url) %>
+        </div>
+        <div class="new-gym-right">
+            <p class="district-name"><%= gym.district.name unless gym.district.nil?%></p>
+            <p><%= time_ago_in_words(gym.created_at) %>前に掲載！</p></br>
+            <p class="line"><%= truncate(gym.name, omission: '...', length: 30) %></p>
+        </div>
+    </div>
+
+<!--スマホ用-->
+    <div class="card" style="width: 18rem;">
+        <a class="link" href="/gyms/<%= gym.id %>"></a>
+        <%= image_tag(gym.image.url, size: '286x180') %>
+        <p class="district-name"><%= gym.district.name unless gym.district.nil?%></p>
+        <div class="card-body">
+            <h5 class="card-title"><%= truncate(gym.name, omission: '..', length: 20) %></h5>
+            <p class="card-text"><%= truncate(gym.title, omission: '..', length: 70) %></p>
+        </div>
+        <p class="new-gyms-time"><%= time_ago_in_words(gym.created_at) %>前に掲載！</p>
+    </div>
+
+<% end %>

@@ -1,0 +1,52 @@
+<footer>
+    <div class="main-content">
+        <div class="left box">
+            <h2>About us</h2>
+            <div class="content">
+                <p>こちらのサービスはポートフォリオです。</p>
+                <div class="social">
+
+                </div>
+            </div>
+        </div>
+        <div class="center box">
+            <h2>Address</h2>
+            <div class="content">
+                <div class="place">
+                    <span class="fas fa-map-marker-alt"></span>
+                    <span class="text">Osaka,</span>
+                </div>
+                <div class="phone">
+                    <span class="fas fa-phone-alt"></span>
+                    <span class="text">000-0000-0000</span>
+                </div>
+                <div class="email">
+                    <span class="fas fa-envelope"></span>
+                    <span class="text">morit617@gmail.com</span>
+                </div>
+            </div>
+        </div>
+        <div class="right box">
+            <h2>Contact us</h2>
+            <div class="content">
+                <% @contact = Contact.new %>
+                <%= form_for @contact do |f| %>
+                <div class="form-group">
+                    <%= f.label :email, '返信先メールアドレス' %>
+                    <%= f.text_field :email, class: 'form-control' %>
+                </div>
+                <div class="form-group">
+                    <%= f.label :message, 'お問い合わせ内容' %>
+                    <%= f.text_area :message, class: 'form-control' %>
+                </div>
+                <%= f.submit '送信', class: 'btnn'%>
+                <% end %>
+            </div>
+        </div>
+    </div>
+    <div class="bottom">
+        <center>
+            <span class="far fa-copyright"></span><span>2020 All right reserved.</span>
+        </center>
+    </div>
+</footer>

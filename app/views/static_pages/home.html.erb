@@ -1,0 +1,117 @@
+<div class="top">
+  <div id="home-top">
+    <%= image_tag("home1.jpg", class: "active") %>
+    <%= image_tag("home2.jpg") %>
+    <%= image_tag("home3.jpg") %>
+    <%= image_tag("home4.jpg") %>
+  </div>
+  <script type="text/javascript">
+    function slideSwitch() {
+      var $active = $('#home-top img.active');
+
+      if ( $active.length == 0 ) $active = $('#home-top img:last');
+
+      var $next =  $active.next().length ? $active.next()
+          : $('#home-top img:first');
+
+      $active.addClass('last-active');
+
+      $next.css({opacity: 0.0})
+          .addClass('active')
+          .animate({opacity: 1.0}, 1000, function() {
+              $active.removeClass('active last-active');
+          });
+    }
+
+    $(function() {
+      setInterval( "slideSwitch()", 5000 );
+    });
+  </script>
+
+  <div class="home-gra"></div>
+  <div class="home-box">
+    <h2>あなたの街で理想のパーソナルトレーナーが見つかる</h2>
+  </div>
+    <div class="home-form">
+      <%= search_form_for(@q, url:gyms_path) do |f| %>
+        <p>自分の住んでいる地域から理想のジムを探すことができ、それぞれのジムで活躍しているトレーナーを探せます。</p>
+        <%= f.text_field :name_or_title_or_content_or_address_or_categories_name_cont, class: "home-fbox" %>
+        <%= f.submit "検索", class: "home-fbtn" %>
+      <% end %>
+    </div>
+
+</div><!--top-->
+<div class="container">
+  <h2 class="heading">人気のカテゴリー</h2>
+  <div class="row justify-content-center">
+    <%= render 'static_pages/cate' %>
+  </div>
+
+  <h2 class="heading">新しくできたジム</h2>
+  <div class="new-gyms">
+    <%= render 'static_pages/new_gyms' %>
+  </div>
+
+  <div style="text-align: right;"><a href="/gyms">ジム一覧へ</a></div>
+</div>
+
+<div class="tra-img">
+  <div class="home-box">
+    <h2>運動を続けるのは難しいですか？</h2>
+  </div>
+    <div class="home-form">
+      <%= search_form_for(@q, url:trainers_path) do |f| %>
+        <p>運動をすればいいと分かっている。汗をかけばちょっと笑顔になれる。分かっていても続けづらい運動を、ケガの心配をしないでいいようにトレーナー指導のもと始めてみませんか。 </p>
+        <%= f.text_field :name_or_title_or_content_or_categories_name_cont, class: "home-fbox" %>
+        <%= f.submit "検索", class: "home-fbtn" %>
+      <% end %>
+    </div>
+</div>
+<div class="container">
+  <%= render 'shared/trainers-swiper' %>
+  <div style="text-align: right;"><a href="/trainers">トレーナー一覧へ</a></div>
+</div>
+
+<script>
+var mySwiper = new Swiper('.swiper-container', {
+    navigation: {
+    nextEl: '.swiper-button-next',
+    prevEl: '.swiper-button-prev',
+  },
+  slidesPerView: 1,
+    breakpoints: {
+    375: {
+      slidesPerView: 1.1,
+    },
+    405: {
+      slidesPerView: 1.2,
+    },
+    433: {
+      slidesPerView: 1.3,
+    },
+    495: {
+      slidesPerView: 1.5,
+    },
+    530: {
+      slidesPerView: 1.6,
+    },
+    768: {
+      slidesPerView: 2.2,
+    },
+    992: {
+      slidesPerView: 3,
+    },
+    1200: {
+      slidesPerView: 3.1,
+    }
+  },
+  centeredSlides : true,
+  loop: true,
+	autoplay: {
+		delay: 10000,
+		stopOnLastSlide: false,
+		disableOnInteraction: false,
+    reverseDirection: false,
+	}
+});
+</script>

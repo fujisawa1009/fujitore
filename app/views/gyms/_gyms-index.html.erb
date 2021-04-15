@@ -1,0 +1,103 @@
+<% @gyms.each do |gym|%>
+
+    <div class="gyms-item"> 
+    <a class="link" href="/gyms/<%= gym.id %>"></a>
+        <div class="gyms-title">
+            <h5><%= truncate(gym.name, omission: '..', length: 40) %> </h5>
+        </div>
+        <div class="gyms-box">
+            <div class="gyms-left">
+                <a href="/gyms/<%= gym.id %>"><%= image_tag (gym.image.url) %></a>
+            </div>
+            <div class="gyms-right">
+                <div class="gyms-star">
+                    <p id="star-ave<%= gym.id %>">評価</p>
+                    <p>(口コミ数<%= gym.comments.count %>)</p>
+                </div>
+                    <script>
+                        $('#star-ave<%= gym.id %>').raty({
+                        size: 36,
+                        starOff:  '<%= asset_path('star-off.png') %>',
+                        starOn : '<%= asset_path('star-on.png') %>',
+                        starHalf: '<%= asset_path('star-half.png') %>',
+                        half: true,
+                        readOnly: true,
+                        score: <%= gym.comments.average(:rate).to_f.round(1) %>,
+                        });
+                    </script>
+                <% gym.gym_categories.each do |g| %>
+                    <%= link_to g.category.name, gyms_path(q: {categories_id_in: g.category_id }), {class: "gyms-content"} %>
+                <% end %>
+                </br><p class="gyms-content"><%= gym.address %></p></br>
+                <p class="gyms-content">月会費：<%= gym.price %></p>
+                    <% if gym.title.length > 40 %>
+                        <p class="read"><%= gym.title %></p>
+                    <% else %>
+                        <p><%= gym.title %></p>
+                    <% end %>
+                    <script>
+                        $(function () {
+                            $('.read').readmore({
+                            speed: 100,
+                            collapsedHeight: 45,
+                            moreLink: '<a href="#">続きを読む</a>',
+                            lessLink: '<a href="#">閉じる</a>'
+                            });
+                        });
+                    </script>                            
+            </div><!--gyms-right-->
+        </div><!--gyms-box-->
+        <div class="gyms-button">
+            <i class="fa fa-phone" aria-hidden="true" style="color: #0080ff;" ></i> <%=gym.number%>
+            <a href="#" class="btn-flat-simple">
+                <i class="fa fa-caret-right"></i> HPで詳しく見る
+            </a>
+        </div>
+    </div><!--gyms-item-->
+
+    <!--スマホ用-->
+        <div class="gyms-card" style="width: 18rem;">
+            <a class="link" href="/gyms/<%= gym.id %>"></a>
+            <%= image_tag(gym.image.url, size: '286x180') %>
+            <p class="district-name"><%= gym.district.name unless gym.district.nil?%></p>
+            <div class="gyms-card-body">
+                <div class="gyms-star">
+                    <p id="star_ave<%= gym.id %>">評価 </p>
+                    <p>(口コミ数<%= gym.comments.count %>)</p>
+                </div>
+                    <script>
+                        $('#star_ave<%= gym.id %>').raty({
+                        size: 36,
+                        starOff:  '<%= asset_path('star-off.png') %>',
+                        starOn : '<%= asset_path('star-on.png') %>',
+                        starHalf: '<%= asset_path('star-half.png') %>',
+                        half: true,
+                        readOnly: true,
+                        score: <%= gym.comments.average(:rate).to_f.round(1) %>,
+                        });
+                    </script>
+                <h5 class="gyms-card-title"><%= truncate(gym.name, omission: '..', length: 20) %></h5>
+                <p class="gyms-card-text"><%= truncate(gym.title, omission: '..', length: 70) %></p>
+                  <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <% gym.gym_categories.each do |g| %>
+                            <%= link_to g.category.name, gyms_path(q: {categories_id_in: g.category_id }), {class: "gyms-content"} %>
+                        <% end %>
+                    </li>
+                    <li class="list-group-item"><p class="gyms-content">月会費：<%= gym.price %></p></li>
+                    <li class="list-group-item"><i class="fa fa-phone" aria-hidden="true" style="color: #0080ff;" ></i> <%=gym.number%></li>
+                </ul>
+            </div>
+        </div>
+                        <script>
+                        $('#star_ave<%= gym.id %>').raty({
+                        size: 36,
+                        starOff:  '<%= asset_path('star-off.png') %>',
+                        starOn : '<%= asset_path('star-on.png') %>',
+                        starHalf: '<%= asset_path('star-half.png') %>',
+                        half: true,
+                        readOnly: true,
+                        score: <%= gym.comments.average(:rate).to_f.round(1) %>,
+                        });
+                    </script>
+<% end %>
